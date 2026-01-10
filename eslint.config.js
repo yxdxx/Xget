@@ -1,9 +1,12 @@
 import js from '@eslint/js';
+import prettierConfig from 'eslint-config-prettier';
+import jsdoc from 'eslint-plugin-jsdoc';
 
 export default [
   js.configs.recommended,
+  jsdoc.configs['flat/recommended'],
   {
-    files: ['src/**/*.js', 'test/**/*.js'],
+    files: ['src/**/*.js', 'test/**/*.js', 'adapters/**/*.js'],
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: 'module',
@@ -19,6 +22,20 @@ export default [
         URL: 'readonly',
         URLSearchParams: 'readonly',
         console: 'readonly',
+        AbortController: 'readonly',
+        AbortSignal: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        setInterval: 'readonly',
+        clearInterval: 'readonly',
+        ReadableStream: 'readonly',
+        WritableStream: 'readonly',
+        TransformStream: 'readonly',
+        TextEncoder: 'readonly',
+        TextDecoder: 'readonly',
+        performance: 'readonly',
+        globalThis: 'readonly',
+        process: 'readonly',
 
         // Vitest globals
         describe: 'readonly',
@@ -31,7 +48,42 @@ export default [
         vi: 'readonly'
       }
     },
+    settings: {
+      jsdoc: {
+        mode: 'typescript',
+        tagNamePreference: {
+          returns: 'returns'
+        }
+      }
+    },
     rules: {
+      // JSDoc rules overrides
+      'jsdoc/require-description': 'warn',
+      'jsdoc/require-returns': 'off', // Often redundant if return type is void or obvious
+      'jsdoc/require-param-description': 'off', // Names are often self-explanatory
+      'jsdoc/no-undefined-types': [
+        'warn',
+        {
+          definedTypes: [
+            'ExecutionContext',
+            'Cache',
+            'RequestInit',
+            'Request',
+            'Response',
+            'Headers',
+            'URL',
+            'URLSearchParams',
+            'AbortController',
+            'AbortSignal',
+            'ReadableStream',
+            'WritableStream',
+            'TransformStream',
+            'TextEncoder',
+            'TextDecoder'
+          ]
+        }
+      ],
+
       // Code quality rules
       'no-unused-vars': [
         'error',
@@ -217,6 +269,7 @@ export default [
       'template-curly-spacing': ['error', 'never']
     }
   },
+  prettierConfig, // Disable formatting rules that conflict with Prettier
   {
     files: ['test/**/*.js'],
     rules: {
